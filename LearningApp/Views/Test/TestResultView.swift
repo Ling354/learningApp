@@ -1,0 +1,72 @@
+//
+//  TestResultView.swift
+//  LearningApp
+//
+//  Created by Jeff Lingley on 2022-06-07.
+//
+
+import SwiftUI
+
+struct TestResultView: View {
+    
+    @EnvironmentObject var model: ContentView
+    
+    var numCorrect: Int
+    
+    var resultHeading: String {
+        
+        guard model.currentModule != nil else {
+            return ""
+        }
+        
+        let pct = Double(numCorrect)/Double(model.currentModule!.test.questions.count)
+        
+        if pct > 0.5 {
+            return "Awesome!"
+        } else if pct > 0.2 {
+            return "Doing great!"
+        } else {
+            return "Keep learning, you got this!"
+        }
+        
+    }
+    
+    var body: some View {
+        VStack {
+            
+            Spacer()
+            
+            Text(resultHeading)
+                .font(.title)
+            
+            Spacer()
+            
+            Text("You got \(numCorrect) out of \(model.currentModule?.test.questions.count ?? 0) questions")
+            
+            Spacer()
+            
+            Button {
+                
+                // Save currentTestIindex to 0
+                model.nextQuestion()
+                
+                // Send user back to the home view
+                model.currentTestSelected = nil
+                
+            } label: {
+                
+                ZStack {
+                    
+                    RectangleCard(color: .green)
+                        .frame(height: 48)
+                    
+                    Text("Complete")
+                        .bold()
+                        .foregroundColor(.white)
+                }
+            }
+            .padding()
+        }
+    }
+}
+
